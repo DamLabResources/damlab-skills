@@ -30,7 +30,7 @@ Every skill lives in its own directory `<toolname>/` at the repo root:
 
 ## 1. environment.yaml
 
-Name must follow the convention `damlab-skill-<toolname>`. No version pin — always resolves latest from bioconda.
+No version pin — always resolves latest from bioconda. The `name:` field is ignored at install time (env is created with `--prefix`); include it as documentation only.
 
 ```yaml
 name: damlab-skill-<toolname>
@@ -62,20 +62,26 @@ description: <Third-person, specific. Include WHAT the tool does and WHEN to use
 # <Toolname>
 
 ## Environment
-conda run -n damlab-skill-<toolname> <tool> [args]
+
+​```bash
+<TOOLNAME>=~/.cursor/skills/<toolname>/bin/<toolname>
+​```
 
 ## Common patterns
-[5-8 most-used patterns with runnable examples]
+[5-8 most-used patterns with runnable examples using $<TOOLNAME>]
 
 ## Additional reference
 - Full subcommand reference: [reference.md](reference.md)
 ```
 
 **Rules:**
-- Use `conda run -n damlab-skill-<toolname> <tool>` for every command example
+- Define the binary path as a variable in the Environment section: `<TOOLNAME>=~/.cursor/skills/<toolname>/bin/<toolname>`
+- This path is stable on any machine: `install.sh` creates a `bin/` symlink inside each skill dir pointing to the venv's `bin/` directory
+- Use `$<TOOLNAME>` for every command example — never `conda run`
+- Pipes between tools use direct paths on both sides: `$TOOL1 ... | $TOOL2 ...`
 - Keep SKILL.md under 150 lines — put detailed flags in reference.md
 - Each pattern should be a runnable example, not a prose description
-- Include a multi-tool pipeline example if the tool is commonly piped (e.g. samtools → seqkit)
+- Include a multi-tool pipeline example if the tool is commonly piped
 
 ---
 
@@ -98,7 +104,7 @@ Aim for completeness over brevity here — this is the reference the agent reads
 ## [Unreleased]
 
 ## [YYYY-MM-DD] — Initial skill
-- Tool version: latest at install time (run `conda run -n damlab-skill-<toolname> <tool> --version` to check)
+- Tool version: latest at install time (run `~/.cursor/skills/<toolname>/bin/<toolname> --version` to check)
 - Skill version: 1.0.0
 - Added: initial SKILL.md, reference.md, environment.yaml
 ```

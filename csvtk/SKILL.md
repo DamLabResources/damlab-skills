@@ -13,7 +13,7 @@ description: Manipulate CSV and TSV tabular data files using csvtk. Use when wor
 ## Environment
 
 ```bash
-conda run -n damlab-skill-csvtk csvtk <subcommand> [options]
+CSVTK=~/.cursor/skills/csvtk/bin/csvtk
 ```
 
 ## Critical global flags
@@ -31,66 +31,65 @@ conda run -n damlab-skill-csvtk csvtk <subcommand> [options]
 
 **Inspect a table (dimensions + column names):**
 ```bash
-conda run -n damlab-skill-csvtk csvtk dim input.csv
-conda run -n damlab-skill-csvtk csvtk headers input.csv
+$CSVTK dim input.csv
+$CSVTK headers input.csv
 # TSV:
-conda run -n damlab-skill-csvtk csvtk dim -t input.tsv
-conda run -n damlab-skill-csvtk csvtk headers -t input.tsv
+$CSVTK dim -t input.tsv
+$CSVTK headers -t input.tsv
 ```
 
 **Select and reorder columns:**
 ```bash
-conda run -n damlab-skill-csvtk csvtk cut -f sample,reads,coverage input.csv
-conda run -n damlab-skill-csvtk csvtk cut -f 1,3,5 input.csv   # by index
+$CSVTK cut -f sample,reads,coverage input.csv
+$CSVTK cut -f 1,3,5 input.csv   # by index
 ```
 
 **Filter rows by expression:**
 ```bash
 # Numeric: keep rows where coverage > 10
-conda run -n damlab-skill-csvtk csvtk filter2 -f '$coverage > 10' input.csv
+$CSVTK filter2 -f '$coverage > 10' input.csv
 # String match:
-conda run -n damlab-skill-csvtk csvtk filter2 -f '$status == "PASS"' input.csv
+$CSVTK filter2 -f '$status == "PASS"' input.csv
 # Combined:
-conda run -n damlab-skill-csvtk csvtk filter2 -f '$coverage > 10 && $status == "PASS"' input.csv
+$CSVTK filter2 -f '$coverage > 10 && $status == "PASS"' input.csv
 ```
 
 **Frequency table for a column:**
 ```bash
-conda run -n damlab-skill-csvtk csvtk freq -f sample input.csv
-conda run -n damlab-skill-csvtk csvtk freq -f status -r input.csv  # sort by count desc
+$CSVTK freq -f sample input.csv
+$CSVTK freq -f status -r input.csv  # sort by count desc
 ```
 
 **Group-by summary statistics:**
 ```bash
 # Mean and sum of coverage, grouped by sample
-conda run -n damlab-skill-csvtk csvtk summary -f coverage:mean,reads:sum -g sample input.csv
+$CSVTK summary -f coverage:mean,reads:sum -g sample input.csv
 ```
 
 **Join two tables on a shared key:**
 ```bash
 # Inner join (default):
-conda run -n damlab-skill-csvtk csvtk join -f sample table1.csv table2.csv -o joined.csv
+$CSVTK join -f sample table1.csv table2.csv -o joined.csv
 # Left join:
-conda run -n damlab-skill-csvtk csvtk join -f sample --left-join table1.csv table2.csv
+$CSVTK join -f sample --left-join table1.csv table2.csv
 ```
 
 **Sort by column:**
 ```bash
-conda run -n damlab-skill-csvtk csvtk sort -k coverage:n input.csv   # numeric ascending
-conda run -n damlab-skill-csvtk csvtk sort -k coverage:nr input.csv  # numeric descending
-conda run -n damlab-skill-csvtk csvtk sort -k sample:r input.csv     # string descending
+$CSVTK sort -k coverage:n input.csv   # numeric ascending
+$CSVTK sort -k coverage:nr input.csv  # numeric descending
+$CSVTK sort -k sample:r input.csv     # string descending
 ```
 
 **Convert CSV ↔ TSV:**
 ```bash
-conda run -n damlab-skill-csvtk csvtk csv2tab input.csv -o output.tsv
-conda run -n damlab-skill-csvtk csvtk tab2csv input.tsv -o output.csv
+$CSVTK csv2tab input.csv -o output.tsv
+$CSVTK tab2csv input.tsv -o output.csv
 ```
 
 **Pipe: filter then select columns, output TSV:**
 ```bash
-conda run -n damlab-skill-csvtk bash -c \
-  "csvtk filter2 -f '\$coverage > 10' input.csv | csvtk cut -f sample,coverage -T"
+$CSVTK filter2 -f '$coverage > 10' input.csv | $CSVTK cut -f sample,coverage -T
 ```
 
 ## Additional reference

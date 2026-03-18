@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # install.sh — set up damlab-skills on a new machine
 #
-# 1. Creates a conda env for each skill from its environment.yaml (skips if already exists)
+# 1. Creates conda envs for each skill under venvs/<toolname>/ (skips if already exists)
 # 2. Symlinks each skill directory into ~/.cursor/skills/
 #
 # Usage: bash install.sh
@@ -11,6 +11,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DST="$HOME/.cursor/skills"
+VENVS_DIR="$REPO_DIR/venvs"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -19,8 +20,8 @@ SKILLS_DST="$HOME/.cursor/skills"
 log()  { echo "[install] $*"; }
 warn() { echo "[install] WARNING: $*" >&2; }
 
-conda_env_exists() {
-    conda env list 2>/dev/null | awk '{print $1}' | grep -qx "$1"
+venv_exists() {
+    [[ -d "$VENVS_DIR/$1" ]]
 }
 
 # ---------------------------------------------------------------------------
@@ -31,17 +32,18 @@ TOOL_SKILLS=(samtools seqkit csvtk)
 META_SKILLS=(create-skill)
 
 # ---------------------------------------------------------------------------
-# 1. Create conda environments
+# 1. Create conda environments under venvs/
 # ---------------------------------------------------------------------------
 
-log "Creating conda environments..."
+log "Creating conda environments in $VENVS_DIR ..."
+mkdir -p "$VENVS_DIR"
 
 # Ensure conda is available
 if ! command -v conda &>/dev/null; then
     warn "conda not found in PATH. Skipping env creation."
     warn "Install conda/mamba and re-run, or create envs manually:"
     for skill in "${TOOL_SKILLS[@]}"; do
-        warn "  conda env create -f $REPO_DIR/$skill/environment.yaml"
+        warn "  conda env create --prefix $VENVS_DIR/$skill -f $REPO_DIR/$skill/environment.yaml"
     done
 else
     for skill in "${TOOL_SKILLS[@]}"; do
@@ -51,14 +53,18 @@ else
             continue
         fi
 
-        env_name="damlab-skill-$skill"
-        if conda_env_exists "$env_name"; then
-            log "  $env_name already exists — skipping (remove and re-run to upgrade)"
+        if venv_exists "$skill"; then
+            log "  $VENVS_DIR/$skill already exists — skipping (remove and re-run to upgrade)"
         else
-            log "  Creating $env_name from $skill/environment.yaml ..."
-            conda env create -f "$env_file"
-            log "  $env_name created."
+            log "  Creating $VENVS_DIR/$skill from $skill/environment.yaml ..."
+            conda env create --prefix "$VENVS_DIR/$skill" -f "$env_file"
+            log "  $VENVS_DIR/$skill created."
         fi
+
+        # Create a bin/ symlink inside the skill dir -> ../venvs/<skill>/bin
+        # This lets SKILL.md reference ~/.cursor/skills/<skill>/bin/<tool>
+        # without hardcoding the repo location.
+        ln -sfn "../venvs/$skill/bin" "$REPO_DIR/$skill/bin"
     done
 fi
 
@@ -85,6 +91,6 @@ done
 log ""
 log "Done. Restart Cursor to pick up new skills."
 log ""
-log "To upgrade a tool's conda env to the latest version:"
-log "  conda env remove -n damlab-skill-<tool>"
-log "  conda env create -f <tool>/environment.yaml"
+log "To upgrade a tool's env to the latest version:"
+log "  rm -rf $VENVS_DIR/<tool>"
+log "  conda env create --prefix $VENVS_DIR/<tool> -f <tool>/environment.yaml"
