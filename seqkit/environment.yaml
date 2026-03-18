@@ -1,0 +1,7 @@
+name: damlab-skill-seqkit
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - seqkit
