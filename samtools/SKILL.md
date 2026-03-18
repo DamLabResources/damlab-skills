@@ -15,6 +15,58 @@ description: Manipulate SAM/BAM/CRAM alignment files using samtools. Use when wo
 SAMTOOLS=~/.cursor/skills/samtools/bin/samtools
 ```
 
+## Subcommands
+
+**Indexing**
+- `dict` — create a sequence dictionary (.dict) from a FASTA
+- `faidx` — index FASTA (creates .fai) and/or extract subsequences by region
+- `fqidx` — index FASTQ for random access
+- `index` — index a coordinate-sorted BAM/CRAM (BAI or CSI format)
+
+**Editing**
+- `calmd` — recalculate MD/NM tags and optionally '=' bases
+- `fixmate` — fill in mate information (run after `sort -n`; use `-m` for markdup compatibility)
+- `reheader` — replace BAM/CRAM header in-place or via external command
+- `targetcut` — cut fosmid regions (fosmid pool only)
+- `addreplacerg` — add or replace `@RG` header lines and RG tags on reads
+- `markdup` — mark or remove PCR/optical duplicate reads (requires fixmate -m + coord sort)
+- `ampliconclip` — soft- or hard-clip amplicon primer sequences from reads
+
+**File Operations**
+- `collate` — shuffle alignments so read pairs are adjacent (required before `fastq` for PE)
+- `cat` — concatenate BAMs/CRAMs without re-sorting (headers must be compatible)
+- `consensus` — generate consensus FASTA/FASTQ/pileup from aligned reads (simple or Bayesian)
+- `merge` — merge multiple sorted BAMs/CRAMs into one
+- `mpileup` — multi-way pileup for variant calling (use bcftools for BCF/VCF output)
+- `sort` — sort alignments by coordinate, name, or TAG
+- `split` — split BAM by read group or TAG value
+- `quickcheck` — verify BAM/CRAM is not truncated or corrupt
+- `fastq` — convert BAM to FASTQ (supports paired-end splitting)
+- `fasta` — convert BAM to FASTA
+- `import` — convert FASTA/FASTQ to SAM/BAM/CRAM
+- `reference` — generate a reference FASTA from aligned CRAM data
+- `reset` — revert aligner changes in reads (strips alignment information)
+
+**Statistics**
+- `bedcov` — total read depth per BED region
+- `coverage` — per-reference coverage summary table or histogram
+- `depth` — per-position read depth (one line per position)
+- `flagstat` — summary alignment statistics (mapped, paired, duplicates, etc.)
+- `idxstats` — per-reference mapped/unmapped read counts (requires index)
+- `cram-size` — list CRAM Content-ID and Data-Series sizes
+- `phase` — phase heterozygous SNPs
+- `stats` — detailed statistics for plot-bamstats visualization
+- `ampliconstats` — generate amplicon-specific stats from a primers BED file
+- `checksum` — produce order-agnostic checksums of sequence content
+
+**Viewing**
+- `flags` — convert between numeric and textual BAM flag representations
+- `head` — display SAM header and/or first N alignment records
+- `tview` — interactive text alignment viewer in terminal
+- `view` — filter, convert, and subset SAM/BAM/CRAM; supports all flag, region, tag, and expression filters
+- `depad` — convert padded BAM to unpadded BAM
+- `samples` — list the samples present in a set of SAM/BAM/CRAM files
+
 ## Common patterns
 
 **Sort + index (most common starting point):**
@@ -70,6 +122,18 @@ samtools reads/writes stdin/stdout and pipes cleanly with other tools:
 $SAMTOOLS view -bS -@ 4 input.sam | $SAMTOOLS sort -@ 4 -o sorted.bam
 ```
 
-## Additional reference
+## Full flag reference
 
-Full subcommand reference with all flags: [reference.md](reference.md)
+To look up all flags for a specific subcommand:
+```bash
+grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/samtools/reference.md
+```
+Full reference: [reference.md](reference.md)
+
+## Patterns
+
+Reusable real-world patterns accumulated over time. To search:
+```bash
+grep -A 20 "keyword" ~/.cursor/skills/samtools/patterns.md
+```
+[patterns.md](patterns.md)
