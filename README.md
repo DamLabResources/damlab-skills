@@ -10,6 +10,7 @@ A collection of [Cursor AgentSkills](https://docs.cursor.com/agent/skills) for b
 | `seqkit` | [seqkit](https://bioinf.shenwei.me/seqkit/) | FASTA/FASTQ sequence manipulation |
 | `csvtk` | [csvtk](https://bioinf.shenwei.me/csvtk/) | CSV/TSV tabular data manipulation |
 | `pod5` | [pod5](https://github.com/nanoporetech/pod5-file-format) | POD5 nanopore raw signal file inspection, merging, filtering, subsetting, and conversion |
+| `crispresso` | [CRISPResso2](https://docs.crispresso.com/) | CRISPR genome editing outcome analysis from amplicon sequencing (indels, HDR, base editing, prime editing) |
 | `create-skill` | — | Meta-skill: conventions for adding new skills to this repo |
 | `bioinfo-best-practices` | — | Meta-skill: workflow conventions for reproducible bioinformatics analysis and debugging |
 

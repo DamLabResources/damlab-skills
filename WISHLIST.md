@@ -5,7 +5,8 @@
  - [] script writing
 
 ## Tools
- - [ ] pod5
+ - [x] pod5
+ - [x] crispresso
  - [ ] bedtools
  - [ ] bcftools
  - [ ] minimap2

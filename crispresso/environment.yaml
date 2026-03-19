@@ -1,0 +1,7 @@
+name: damlab-skill-crispresso
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - crispresso2
