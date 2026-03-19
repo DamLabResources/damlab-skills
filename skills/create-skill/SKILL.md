@@ -7,10 +7,10 @@ description: Conventions and checklist for adding a new bioinformatics tool skil
 
 ## Required files per skill
 
-Every skill lives in its own directory `<toolname>/` at the repo root:
+Every skill lives in its own directory `skills/<toolname>/` in the repo:
 
 ```
-<toolname>/
+skills/<toolname>/
 ├── SKILL.md          # Subcommand index + common patterns + grep-lookup instructions
 ├── reference.md      # Verbatim --help output for every subcommand
 ├── patterns.md       # Reusable real-world patterns (stub at creation; grows over time)
@@ -20,11 +20,11 @@ Every skill lives in its own directory `<toolname>/` at the repo root:
 
 ## Step-by-step checklist
 
-- [ ] Create `<toolname>/environment.yaml`
-- [ ] Create `<toolname>/SKILL.md`
-- [ ] Create `<toolname>/reference.md`
-- [ ] Create `<toolname>/patterns.md`
-- [ ] Create `<toolname>/CHANGELOG.md`
+- [ ] Create `skills/<toolname>/environment.yaml`
+- [ ] Create `skills/<toolname>/SKILL.md`
+- [ ] Create `skills/<toolname>/reference.md`
+- [ ] Create `skills/<toolname>/patterns.md`
+- [ ] Create `skills/<toolname>/CHANGELOG.md`
 - [ ] Add `<toolname>` to the `TOOL_SKILLS` array in `install.sh`
 - [ ] Add a row to the skills table in `README.md`
 

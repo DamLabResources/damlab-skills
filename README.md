@@ -41,7 +41,7 @@ bash install.sh   # re-links any new skills; skips existing conda envs
 To update a conda env to the latest tool version:
 ```bash
 conda env remove -n damlab-skill-samtools
-conda env create -f samtools/environment.yaml
+conda env create -f skills/samtools/environment.yaml
 ```
 
 ## Cursor Setup (`.cursor/mcp.json` not required)
@@ -56,23 +56,25 @@ For project-level skills (shared via a repo), symlink into `.cursor/skills/` in 
 damlab-skills/
 ├── README.md
 ├── install.sh
-├── create-skill/       # Meta-skill for adding new tools to this repo
-│   └── SKILL.md
-├── samtools/
-│   ├── SKILL.md
-│   ├── reference.md
-│   ├── environment.yaml
-│   └── CHANGELOG.md
-├── seqkit/
-│   ├── SKILL.md
-│   ├── reference.md
-│   ├── environment.yaml
-│   └── CHANGELOG.md
-└── csvtk/
-    ├── SKILL.md
-    ├── reference.md
-    ├── environment.yaml
-    └── CHANGELOG.md
+├── venvs/              # Conda envs created by install.sh (gitignored)
+└── skills/
+    ├── create-skill/   # Meta-skill for adding new tools to this repo
+    │   └── SKILL.md
+    ├── samtools/
+    │   ├── SKILL.md
+    │   ├── reference.md
+    │   ├── environment.yaml
+    │   └── CHANGELOG.md
+    ├── seqkit/
+    │   ├── SKILL.md
+    │   ├── reference.md
+    │   ├── environment.yaml
+    │   └── CHANGELOG.md
+    └── csvtk/
+        ├── SKILL.md
+        ├── reference.md
+        ├── environment.yaml
+        └── CHANGELOG.md
 ```
 
 ## Adding a new skill

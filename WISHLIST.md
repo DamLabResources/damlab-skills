@@ -7,6 +7,7 @@
 ## Tools
  - [x] pod5
  - [x] crispresso
+ - [ ] cas-offinder
  - [ ] bedtools
  - [ ] bcftools
  - [ ] minimap2
