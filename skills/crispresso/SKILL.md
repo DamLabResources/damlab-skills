@@ -35,6 +35,8 @@ CRISPRESSO_AGGREGATE=~/.cursor/skills/crispresso/bin/CRISPRessoAggregate
 - `CRISPRessoCompare` — compare editing outcomes between two CRISPResso runs (e.g. treated vs control)
 - `CRISPRessoAggregate` — aggregate HTML reports from previously-run CRISPResso analyses into a single summary
 
+**Sample order in aggregates:** `CRISPRessoAggregate` has no flag to set sample order. Runs are sorted **alphabetically by the full path** to each CRISPResso output folder (and the summary table is sorted by the `Name` column). The order of multiple `-p` prefixes does not change the quilt/summary order. To force a custom order (e.g. controls before treated), rename folders or use **symlinks** with numeric prefixes so names sort as desired—see [patterns.md](patterns.md#crispressoaggregate-sample-order-in-quilts-and-tables).
+
 ## Common patterns
 
 **Basic single-end run (amplicon + guide):**
