@@ -1,0 +1,7 @@
+name: damlab-skill-rclone
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - rclone
