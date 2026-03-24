@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Curated [Cursor Agent Skills](https://docs.cursor.com/agent/skills) for command-line bioinformatics tools used in the DAM Lab. Each skill is an [AgentSkills](https://agentskills.io/)-compatible folder with a `SKILL.md` (YAML `name` and `description` plus usage notes) so coding agents learn how to invoke the tool, common patterns, and where to look up full `--help` text.
+Curated [Cursor Agent Skills](https://docs.cursor.com/agent/skills) for command-line bioinformatics tools used in the Dampier lab. Each skill is an [AgentSkills](https://agentskills.io/)-compatible folder with a `SKILL.md` (YAML `name` and `description` plus usage notes) so coding agents learn how to invoke the tool, common patterns, and where to look up full `--help` text.
 
 The same layout works in other agents that load skills from standard locations (for example OpenClaw, which uses AgentSkills-compatible directories under workspace `skills/` and `~/.openclaw/skills`; see [OpenClaw skills](https://docs.openclaw.ai/skills/) for `openclaw skills install`, updates, and [ClawHub](https://clawhub.com/). This repo is a **monorepo** of multiple skills: clone or copy the `skills/<name>/` directory you need, or point your agent’s extra skills path at this checkout’s `skills/` tree if your client supports it.
 
