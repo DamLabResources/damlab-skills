@@ -41,7 +41,7 @@ MCP remains a good fit when there is **no meaningful CLI** (hosted APIs, browser
 **Prerequisites:** `git`, and either [Mamba](https://mamba.readthedocs.io/) or [Conda](https://docs.conda.io/) on your `PATH` (install.sh prefers `mamba` when available).
 
 ```bash
-git clone https://github.com/damlab/damlab-skills ~/repos/damlab-skills
+git clone https://github.com/DamLabResources/damlab-skills ~/repos/damlab-skills
 cd ~/repos/damlab-skills
 bash install.sh
 ```

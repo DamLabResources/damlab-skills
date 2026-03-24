@@ -14,4 +14,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Root `LICENSE` (MIT) and this changelog.
 - README aligned with prefix-based conda environments under `venvs/<tool>/`.
 
-[0.0.1]: https://github.com/damlab/damlab-skills/releases/tag/v0.0.1
+[0.0.1]: https://github.com/DamLabResources/damlab-skills/releases/tag/v0.0.1
