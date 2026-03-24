@@ -1,6 +1,10 @@
 # damlab-skills
 
-A collection of [Cursor AgentSkills](https://docs.cursor.com/agent/skills) for bioinformatics tools used in the DAM Lab. Each skill teaches the AI agent how to use a specific tool — its common patterns, invocation conventions, and full command reference.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+Curated [Cursor Agent Skills](https://docs.cursor.com/agent/skills) for command-line bioinformatics tools used in the DAM Lab. Each skill is an [AgentSkills](https://agentskills.io/)-compatible folder with a `SKILL.md` (YAML `name` and `description` plus usage notes) so coding agents learn how to invoke the tool, common patterns, and where to look up full `--help` text.
+
+The same layout works in other agents that load skills from standard locations (for example OpenClaw, which uses AgentSkills-compatible directories under workspace `skills/` and `~/.openclaw/skills`; see [OpenClaw skills](https://docs.openclaw.ai/skills/) for `openclaw skills install`, updates, and [ClawHub](https://clawhub.com/). This repo is a **monorepo** of multiple skills: clone or copy the `skills/<name>/` directory you need, or point your agent’s extra skills path at this checkout’s `skills/` tree if your client supports it.
 
 ## Skills
 
@@ -15,7 +19,26 @@ A collection of [Cursor AgentSkills](https://docs.cursor.com/agent/skills) for b
 | `create-skill` | — | Meta-skill: conventions for adding new skills to this repo |
 | `bioinfo-best-practices` | — | Meta-skill: workflow conventions for reproducible bioinformatics analysis and debugging |
 
+## Why conda environments instead of MCP servers?
+
+These skills tell the agent to run **real CLI binaries** on your machine. We ship a conda `environment.yaml` per tool and [install.sh](install.sh) creates an isolated **prefix environment** under `venvs/<tool>/` (not a long-lived MCP server).
+
+- **No extra daemon:** MCP servers are often separate processes with their own lifecycle, transport, and failure modes. Here the agent runs the tool in a normal shell when needed.
+- **Reproducible stacks:** Bioconda / conda-forge pin the tool and its native dependencies in one place. MCP wrappers vary in how they bundle or call binaries.
+- **Simpler operations:** After `install.sh`, you are not starting, updating, or authenticating a server socket—only refreshing envs when you choose.
+- **Local trust boundary:** You still trust conda packages, but you are not adding a generic RPC layer in front of every command.
+
+MCP remains a good fit when there is **no meaningful CLI** (hosted APIs, browsers, ticketing systems). For file-oriented bioinformatics CLIs, conda-isolated binaries plus skills are usually less moving parts.
+
+## Compatibility and discovery (SEO)
+
+- **Cursor:** Skills in `~/.cursor/skills/<name>/` or project `.cursor/skills/<name>/` are discovered automatically; relevance is driven by the `description` field in each `SKILL.md` frontmatter ([Cursor docs](https://docs.cursor.com/agent/skills)).
+- **Keywords:** agent skills, Cursor, OpenClaw, ClawHub, bioinformatics, Bioconda, SAM, BAM, FASTQ, nanopore, CRISPR, cloud sync.
+- **GitHub repository topics (set in repo settings):** e.g. `cursor`, `agent-skills`, `bioinformatics`, `conda`, `bioconda`, `openclaw`, `samtools`, `seqkit`.
+
 ## Installation
+
+**Prerequisites:** `git`, and either [Mamba](https://mamba.readthedocs.io/) or [Conda](https://docs.conda.io/) on your `PATH` (install.sh prefers `mamba` when available).
 
 ```bash
 git clone https://github.com/damlab/damlab-skills ~/repos/damlab-skills
@@ -23,67 +46,71 @@ cd ~/repos/damlab-skills
 bash install.sh
 ```
 
-`install.sh` does two things:
-1. Creates a dedicated conda environment for each tool (e.g. `damlab-skill-samtools`) from the tool's `environment.yaml`
-2. Symlinks each skill directory into `~/.cursor/skills/`
+What [install.sh](install.sh) does:
 
-Restart Cursor after running — skills are auto-discovered from `~/.cursor/skills/`.
+1. For each tool skill, creates a conda environment **at a prefix path** `venvs/<tool>/` from `skills/<tool>/environment.yaml`, unless that directory already exists.
+2. Symlinks `skills/<tool>/bin` → `../../venvs/<tool>/bin` so each `SKILL.md` can use stable paths like `~/.cursor/skills/samtools/bin/samtools` after linking.
+3. Symlinks each skill directory into `~/.cursor/skills/`.
 
-Running `install.sh` again on a new machine is safe: existing envs are skipped, symlinks are refreshed.
+The `name:` field inside each `environment.yaml` (e.g. `damlab-skill-samtools`) is **documentation only**; install uses `--prefix` and does not register a conda **named** env. See [skills/create-skill/SKILL.md](skills/create-skill/SKILL.md).
+
+The `venvs/` directory is gitignored. Restart Cursor after install so skills reload.
+
+Re-running `install.sh` is safe: existing prefix envs are skipped; symlinks are refreshed.
 
 ## Updating
 
 ```bash
 cd ~/repos/damlab-skills
 git pull
-bash install.sh   # re-links any new skills; skips existing conda envs
+bash install.sh   # re-links any new skills; skips existing prefix envs
 ```
 
-To update a conda env to the latest tool version:
+To **rebuild** a tool environment (e.g. pick up a newer Bioconda build):
+
 ```bash
-conda env remove -n damlab-skill-samtools
-conda env create -f skills/samtools/environment.yaml
+cd ~/repos/damlab-skills
+rm -rf venvs/samtools
+bash install.sh
+# or, equivalently:
+# mamba env create --prefix venvs/samtools -f skills/samtools/environment.yaml
+# then ensure install.sh has run once so skills/<tool>/bin symlinks exist
 ```
 
-## Cursor Setup (`.cursor/mcp.json` not required)
+## Cursor setup (no MCP required)
 
-Skills are loaded automatically by Cursor when placed in `~/.cursor/skills/`. No additional configuration is needed. The agent applies them based on the `description` field in each `SKILL.md`.
-
-For project-level skills (shared via a repo), symlink into `.cursor/skills/` in the project root instead.
+Skills load automatically from `~/.cursor/skills/`. No `mcp.json` entry is required. For project-local sharing, symlink into `.cursor/skills/` in the repo root.
 
 ## Repo structure
 
 ```
 damlab-skills/
+├── CHANGELOG.md
+├── LICENSE
 ├── README.md
+├── WISHLIST.md
 ├── install.sh
-├── venvs/              # Conda envs created by install.sh (gitignored)
+├── venvs/                    # prefix conda envs (gitignored): venvs/<tool>/
 └── skills/
-    ├── create-skill/   # Meta-skill for adding new tools to this repo
-    │   └── SKILL.md
-    ├── samtools/
-    │   ├── SKILL.md
-    │   ├── reference.md
-    │   ├── environment.yaml
-    │   └── CHANGELOG.md
-    ├── seqkit/
-    │   ├── SKILL.md
-    │   ├── reference.md
-    │   ├── environment.yaml
-    │   └── CHANGELOG.md
-    └── csvtk/
-        ├── SKILL.md
-        ├── reference.md
-        ├── environment.yaml
-        └── CHANGELOG.md
+    └── <tool>/
+        ├── SKILL.md          # frontmatter + subcommands + patterns
+        ├── reference.md      # captured --help output
+        ├── patterns.md
+        ├── environment.yaml  # conda spec; name: is docs-only for prefix installs
+        ├── CHANGELOG.md
+        └── bin/              # symlink -> ../../venvs/<tool>/bin (created by install.sh)
 ```
+
+Tool names under `skills/` match rows in the table above plus meta-skills `create-skill` and `bioinfo-best-practices`.
 
 ## Adding a new skill
 
-Activate the `create-skill` skill in Cursor (it is symlinked alongside the tool skills) and ask the agent to add a new skill. The meta-skill contains all conventions for this repo.
+Use the `create-skill` skill in Cursor or follow the checklist in [skills/create-skill/SKILL.md](skills/create-skill/SKILL.md).
 
-Alternatively, follow the checklist in `create-skill/SKILL.md` manually.
+**Contributing:** follow [skills/create-skill/SKILL.md](skills/create-skill/SKILL.md) and open a pull request.
+
+Roadmap ideas: [WISHLIST.md](WISHLIST.md). Release history: [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
