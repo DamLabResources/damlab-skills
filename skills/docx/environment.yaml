@@ -1,0 +1,12 @@
+name: damlab-skill-docx
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pandoc
+  - python >=3.10
+  - python-docx >=1.1.0
+  - lxml >=4.9.0
+  - pip
+  - pip:
+    - docx-revisions >=0.1.4

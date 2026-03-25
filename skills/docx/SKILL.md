@@ -1,0 +1,143 @@
+---
+name: docx
+description: Read, write, and track-change Microsoft Word (.docx) files. Use when
+  reading document content or paragraph structure, extracting reviewer comments,
+  listing or accepting/rejecting tracked changes, making find-and-replace edits
+  with or without tracked revision markup, inserting or deleting text with author
+  attribution, or converting between .docx and Markdown. Triggers on tasks involving
+  .docx, Word documents, manuscript editing, track changes, document revisions,
+  reviewer comments, or find-and-replace in Word files.
+---
+
+# docx
+
+## Environment
+
+```bash
+DOCX_TOOL="~/.cursor/skills/docx/bin/python ~/.cursor/skills/docx/docx_tool.py"
+PANDOC=~/.cursor/skills/docx/bin/pandoc
+```
+
+## Subcommands — docx_tool.py
+
+**Reading**
+- `read FILE` — print all paragraph text (accepted view; includes hyperlink text)
+- `paragraphs FILE` — numbered paragraph list with style names
+- `get-paragraph FILE N` — print exact text of paragraph N (zero-based); use `--json` for style too
+- `comments FILE [--json]` — extract all reviewer comments (author, date, text)
+
+**Tracked changes**
+- `revisions list FILE [--json]` — list all tracked changes (type, text, author, date)
+- `revisions accept FILE [-o OUT]` — accept all tracked changes and save
+- `revisions reject FILE [-o OUT]` — reject all tracked changes and save
+
+**Editing**
+- `replace FILE OLD NEW [-o OUT] [--track] [--author NAME] [--normalize-quotes] [--allow-no-match]` — find-and-replace; `--track` records a tracked revision; exits 1 on 0 matches (see notes below)
+- `insert FILE ANCHOR TEXT [-o OUT] [--track] [--author NAME]` — insert text after anchor paragraph; `--track` appends as tracked insertion
+- `delete FILE TEXT [-o OUT] [--track] [--author NAME]` — delete matched text; `--track` marks as tracked deletion
+
+## Subcommands — pandoc
+
+**Reading .docx**
+- `-f docx -t markdown` — convert to Markdown (plain text, structure preserved)
+- `--track-changes=all` — include insertions/deletions as annotated spans
+- `--track-changes=accept` — show document with all changes accepted
+- `--track-changes=reject` — show document with all changes rejected
+
+**Writing .docx**
+- `-o output.docx` — write Markdown/HTML/RST input to a new Word document
+
+## Common patterns
+
+**Read a manuscript as plain text:**
+```bash
+$DOCX_TOOL read manuscript.docx
+```
+
+**Read as Markdown (preserves headings, bold, lists):**
+```bash
+$PANDOC manuscript.docx -t markdown
+```
+
+**Show document content with tracked changes visible as inline markup:**
+```bash
+$PANDOC manuscript.docx --track-changes=all -t markdown
+```
+
+**List all tracked changes with author and date:**
+```bash
+$DOCX_TOOL revisions list manuscript.docx
+$DOCX_TOOL revisions list manuscript.docx --json   # machine-readable
+```
+
+**Accept all tracked changes:**
+```bash
+$DOCX_TOOL revisions accept manuscript.docx -o manuscript_clean.docx
+# or via pandoc (bulk conversion only, no granular control):
+$PANDOC manuscript.docx --track-changes=accept -o manuscript_clean.docx
+```
+
+**Find-and-replace leaving a tracked revision (shows in Word's review pane):**
+```bash
+$DOCX_TOOL replace manuscript.docx "samtools v1.17" "samtools v1.21" \
+    --track --author "Agent" -o manuscript_revised.docx
+```
+
+**`replace` exits 1 when nothing matched — this is intentional.** If you want to suppress the failure:
+```bash
+$DOCX_TOOL replace doc.docx "old" "new" --allow-no-match
+```
+
+**Smart-quote / curly-quote mismatch (most common failure mode):**
+Word documents often contain typographic quotes (`'` `'` `"` `"`) and dashes (`–` `—`) instead of
+ASCII equivalents.  When an exact match returns 0, the tool checks for near-matches and prints a hint:
+```
+hint: 1 near-match(es) found that differ only in quote/dash style. Re-run with --normalize-quotes to match.
+```
+Fix by adding `--normalize-quotes`:
+```bash
+$DOCX_TOOL replace doc.docx "agent's" "the agent's" --normalize-quotes --track --author "Me"
+```
+
+**Get the exact paragraph text to use as a replace argument (avoids quote issues):**
+```bash
+# Find the paragraph index first
+$DOCX_TOOL paragraphs doc.docx | grep -i "keyword"
+# Then fetch its exact text
+$DOCX_TOOL get-paragraph doc.docx 3
+# Pipe directly into a shell variable for use in replace
+OLD=$($DOCX_TOOL get-paragraph doc.docx 3)
+$DOCX_TOOL replace doc.docx "$OLD" "new text" --track --author "Me"
+```
+
+**Extract all reviewer comments:**
+```bash
+$DOCX_TOOL comments manuscript.docx
+$DOCX_TOOL comments manuscript.docx --json
+```
+
+**Convert Markdown to a new .docx:**
+```bash
+$PANDOC methods.md -o methods.docx
+```
+
+**Pipe: convert .docx to markdown and search for a string:**
+```bash
+$PANDOC manuscript.docx -t markdown | grep -i "sample size"
+```
+
+## Full flag reference
+
+To look up all flags for a specific subcommand:
+```bash
+grep -A 40 "^### \`subcommand\`" ~/.cursor/skills/docx/reference.md
+```
+Full reference: [reference.md](reference.md)
+
+## Patterns
+
+Reusable real-world patterns accumulated over time. To search:
+```bash
+grep -A 20 "keyword" ~/.cursor/skills/docx/patterns.md
+```
+[patterns.md](patterns.md)
