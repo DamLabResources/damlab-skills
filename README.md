@@ -18,6 +18,7 @@ The same layout works in other agents that load skills from standard locations (
 | `rclone` | [rclone](https://rclone.org/) | Sync and transfer files with cloud storage and remote backends (S3, GCS, Drive, SFTP, etc.) |
 | `create-skill` | — | Meta-skill: conventions for adding new skills to this repo |
 | `bioinfo-best-practices` | — | Meta-skill: workflow conventions for reproducible bioinformatics analysis and debugging |
+| `bioinformatics-methods-results-writer` | — | Meta-skill: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables |
 
 ## Why conda environments instead of MCP servers?
 
@@ -101,7 +102,7 @@ damlab-skills/
         └── bin/              # symlink -> ../../venvs/<tool>/bin (created by install.sh)
 ```
 
-Tool names under `skills/` match rows in the table above plus meta-skills `create-skill` and `bioinfo-best-practices`.
+Tool names under `skills/` match rows in the table above plus meta-skills `create-skill`, `bioinfo-best-practices`, and `bioinformatics-methods-results-writer`.
 
 ## Adding a new skill
 

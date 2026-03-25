@@ -30,7 +30,7 @@ venv_exists() {
 # ---------------------------------------------------------------------------
 
 TOOL_SKILLS=(samtools seqkit csvtk pod5 crispresso rclone)
-META_SKILLS=(create-skill bioinfo-best-practices)
+META_SKILLS=(create-skill bioinfo-best-practices bioinformatics-methods-results-writer)
 
 # ---------------------------------------------------------------------------
 # 1. Create conda environments under venvs/

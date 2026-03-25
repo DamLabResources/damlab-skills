@@ -4,6 +4,12 @@ All notable changes to this repository are documented here. Per-tool history (ve
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) at the repo level: patch for documentation-only fixes, minor for new skills or substantial README/layout updates, major for breaking changes to install paths or skill layout.
 
+## [Unreleased]
+
+### Added
+
+- Meta-skill `bioinformatics-methods-results-writer`: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables.
+
 ## [0.0.1] - 2026-03-23
 
 ### Added
