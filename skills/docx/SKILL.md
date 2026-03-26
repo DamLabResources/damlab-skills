@@ -16,6 +16,7 @@ description: Read, write, and track-change Microsoft Word (.docx) files. Use whe
 ```bash
 DOCX_TOOL="~/.cursor/skills/docx/bin/python ~/.cursor/skills/docx/docx_tool.py"
 PANDOC=~/.cursor/skills/docx/bin/pandoc
+STYLES_DIR=~/.cursor/skills/docx/styles
 ```
 
 ## Subcommands — docx_tool.py
@@ -24,6 +25,7 @@ PANDOC=~/.cursor/skills/docx/bin/pandoc
 - `read FILE` — print all paragraph text (accepted view; includes hyperlink text)
 - `paragraphs FILE` — numbered paragraph list with style names
 - `get-paragraph FILE N` — print exact text of paragraph N (zero-based); use `--json` for style too
+- `list-styles FILE [--type paragraph|character|table|numbering] [--json]` — list all styles defined in the document; use `--type paragraph` to see valid `--style` values for `insert`
 - `comments FILE [--json]` — extract all reviewer comments (author, date, text)
 
 **Tracked changes**
@@ -33,7 +35,7 @@ PANDOC=~/.cursor/skills/docx/bin/pandoc
 
 **Editing**
 - `replace FILE OLD NEW [-o OUT] [--track] [--author NAME] [--normalize-quotes] [--allow-no-match]` — find-and-replace; `--track` records a tracked revision; exits 1 on 0 matches (see notes below)
-- `insert FILE ANCHOR TEXT [-o OUT] [--track] [--author NAME]` — insert text after anchor paragraph; `--track` appends as tracked insertion
+- `insert FILE ANCHOR TEXT [-o OUT] [--track] [--author NAME] [--style NAME]` — insert text as a new paragraph after anchor; `--style` sets the paragraph style (e.g. `Caption`, `Heading 1`); `--track` appends as tracked insertion within the anchor paragraph (style flag ignored in track mode)
 - `delete FILE TEXT [-o OUT] [--track] [--author NAME]` — delete matched text; `--track` marks as tracked deletion
 
 ## Subcommands — pandoc
@@ -46,6 +48,7 @@ PANDOC=~/.cursor/skills/docx/bin/pandoc
 
 **Writing .docx**
 - `-o output.docx` — write Markdown/HTML/RST input to a new Word document
+- `--reference-doc=TEMPLATE.docx` — apply fonts, margins, and paragraph styles from a template; pandoc maps Markdown structure to named Word styles in the template
 
 ## Common patterns
 
@@ -116,14 +119,49 @@ $DOCX_TOOL comments manuscript.docx
 $DOCX_TOOL comments manuscript.docx --json
 ```
 
+**List paragraph styles available in a document (use before inserting with --style):**
+```bash
+$DOCX_TOOL list-styles manuscript.docx --type paragraph
+```
+
+**Insert a caption paragraph after a figure anchor:**
+```bash
+$DOCX_TOOL insert manuscript.docx "Figure 1" "Figure 1. Sample overview." \
+    --style "Caption" -o manuscript_captioned.docx
+```
+
 **Convert Markdown to a new .docx:**
 ```bash
 $PANDOC methods.md -o methods.docx
 ```
 
+**Convert Markdown to .docx using a style template:**
+```bash
+$PANDOC methods.md --reference-doc=$STYLES_DIR/nih-proposal-template.docx -o methods.docx
+```
+
 **Pipe: convert .docx to markdown and search for a string:**
 ```bash
 $PANDOC manuscript.docx -t markdown | grep -i "sample size"
+```
+
+## Style templates
+
+Reusable Word templates live in `~/.cursor/skills/docx/styles/`. Pass any of them to pandoc via `--reference-doc` to control fonts, margins, and paragraph formatting. Pandoc maps Markdown structural elements to named Word styles in the template (e.g. `#` → **Heading 1**, body text → **Body Text**).
+
+| File | Description |
+|---|---|
+| `nih-proposal-template.docx` | NIH grant proposal: Arial 11 pt, 0.5″ margins, tight line spacing |
+
+**Inspect what paragraph styles a template exposes** (use these names with `insert --style`):
+```bash
+$DOCX_TOOL list-styles $STYLES_DIR/nih-proposal-template.docx --type paragraph
+```
+
+**Add your own template:** place any `.docx` whose paragraph styles are correctly configured into `~/.cursor/skills/docx/styles/`. To bootstrap a new template from pandoc's default:
+```bash
+$PANDOC --print-default-data-file reference.docx > $STYLES_DIR/my-template.docx
+# then open my-template.docx in Word, adjust styles and margins, save
 ```
 
 ## Full flag reference

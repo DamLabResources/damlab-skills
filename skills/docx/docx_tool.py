@@ -95,6 +95,23 @@ def get_paragraph(path, index: int) -> dict:
     return paragraphs[index]
 
 
+def list_styles(path, style_type=None):
+    """Return list of dicts with keys: name, type for styles defined in the document.
+
+    Args:
+        style_type: Optional filter — 'paragraph', 'character', 'table', or 'numbering'.
+            If None, all styles are returned.
+    """
+    from docx import Document
+    doc = Document(str(path))
+    type_filter = style_type.lower() if style_type else None
+    return [
+        {"name": s.name, "type": s.type.name.lower()}
+        for s in doc.styles
+        if type_filter is None or s.type.name.lower() == type_filter
+    ]
+
+
 def read_comments(path):
     """Return list of dicts with keys: id, author, date, text."""
     W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -228,15 +245,26 @@ def tracked_insert(path, anchor_text, insert_text, output, author=""):
     return False
 
 
-def plain_insert(path, anchor_text, insert_text, output):
+def plain_insert(path, anchor_text, insert_text, output, style=None):
     """Insert insert_text as a new paragraph immediately after the first paragraph
-    containing anchor_text. Returns True if anchor was found."""
+    containing anchor_text. Returns True if anchor was found.
+
+    Args:
+        style: Word paragraph style name (e.g. 'Caption', 'Heading 1'). If None,
+            uses the document default ('Normal'). Raises KeyError if the style
+            does not exist in the document.
+    """
     from docx import Document
     doc = Document(str(path))
+    if style is not None and style not in [s.name for s in doc.styles]:
+        raise KeyError(
+            f"Style {style!r} not found in document. "
+            f"Available styles: {[s.name for s in doc.styles if s.type.name == 'PARAGRAPH']}"
+        )
     body = doc.element.body
     for para in doc.paragraphs:
         if anchor_text in para.text:
-            new_para = doc.add_paragraph(insert_text)
+            new_para = doc.add_paragraph(insert_text, style=style)
             new_el = new_para._element
             body.remove(new_el)
             para._element.addnext(new_el)
@@ -294,6 +322,15 @@ def cmd_get_paragraph(args):
         print(json.dumps(p, ensure_ascii=False))
     else:
         print(p["text"])
+
+
+def cmd_list_styles(args):
+    styles = list_styles(args.file, style_type=args.type)
+    if args.json:
+        print(json.dumps(styles, indent=2))
+    else:
+        for s in styles:
+            print(f"({s['type']:12s}) {s['name']}")
 
 
 def cmd_comments(args):
@@ -358,10 +395,14 @@ def cmd_replace(args):
 
 def cmd_insert(args):
     out = _resolve_output(args)
-    if args.track:
-        found = tracked_insert(args.file, args.anchor, args.text, out, author=args.author)
-    else:
-        found = plain_insert(args.file, args.anchor, args.text, out)
+    try:
+        if args.track:
+            found = tracked_insert(args.file, args.anchor, args.text, out, author=args.author)
+        else:
+            found = plain_insert(args.file, args.anchor, args.text, out, style=args.style)
+    except KeyError as e:
+        print(f"error: {e}", file=sys.stderr)
+        sys.exit(1)
     if found:
         print(f"Inserted. Saved: {out}")
     else:
@@ -410,6 +451,18 @@ def build_parser():
     p = sub.add_parser("paragraphs", help="List paragraphs with index and style name.")
     p.add_argument("file", help="Input .docx file.")
     p.set_defaults(func=cmd_paragraphs)
+
+    # list-styles
+    p = sub.add_parser("list-styles", help="List styles defined in the document.")
+    p.add_argument("file", help="Input .docx file.")
+    p.add_argument(
+        "--type",
+        default=None,
+        choices=["paragraph", "character", "table", "numbering"],
+        help="Filter by style type (default: show all).",
+    )
+    p.add_argument("--json", action="store_true", help="Output as JSON array.")
+    p.set_defaults(func=cmd_list_styles)
 
     # get-paragraph
     p = sub.add_parser(
@@ -482,6 +535,16 @@ def build_parser():
         help="Record as tracked insertion appended to anchor paragraph.",
     )
     p.add_argument("--author", default="", help="Author name for tracked revision.")
+    p.add_argument(
+        "--style",
+        default=None,
+        help=(
+            "Paragraph style name for the inserted paragraph (e.g. 'Caption', 'Heading 1', "
+            "'Body Text'). Ignored when --track is used (tracked insertions append within "
+            "the anchor paragraph and inherit its style). Use `paragraphs` to see style "
+            "names already in the document."
+        ),
+    )
     p.set_defaults(func=cmd_insert)
 
     # delete
