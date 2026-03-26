@@ -273,6 +273,75 @@ def plain_insert(path, anchor_text, insert_text, output, style=None):
     return False
 
 
+def insert_picture(path, image_path, output, after_index=None, after_anchor=None,
+                   width_inches=None, height_inches=None,
+                   caption=None, caption_style="Caption"):
+    """Insert an inline picture into the document.
+
+    The insertion point is identified by either *after_index* (zero-based paragraph
+    index) or *after_anchor* (substring of the target paragraph's text). Exactly one
+    must be provided.
+
+    Args:
+        after_index:   Insert the picture paragraph after this paragraph index.
+        after_anchor:  Insert after the first paragraph whose text contains this string.
+        width_inches:  Desired width in inches. If only width is given, height scales
+                       proportionally. If neither is given, the image is inserted at its
+                       native size.
+        height_inches: Desired height in inches. If only height is given, width scales
+                       proportionally.
+        caption:       Optional caption text inserted as a new paragraph immediately after
+                       the picture paragraph.
+        caption_style: Paragraph style for the caption (default: 'Caption').
+
+    Returns:
+        True on success. Raises IndexError / ValueError if the anchor is not found.
+    """
+    from docx import Document
+    from docx.shared import Inches
+
+    doc = Document(str(path))
+    paragraphs = doc.paragraphs
+
+    # Resolve insertion anchor
+    if after_index is not None:
+        if after_index < 0 or after_index >= len(paragraphs):
+            raise IndexError(
+                f"Paragraph index {after_index} out of range "
+                f"(document has {len(paragraphs)} paragraphs)."
+            )
+        anchor_para = paragraphs[after_index]
+    elif after_anchor is not None:
+        anchor_para = next(
+            (p for p in paragraphs if after_anchor in p.text), None
+        )
+        if anchor_para is None:
+            raise ValueError(f"Anchor text not found: {after_anchor!r}")
+    else:
+        raise ValueError("Either after_index or after_anchor must be provided.")
+
+    # Build width/height args (None means use native / proportional scale)
+    w = Inches(width_inches) if width_inches is not None else None
+    h = Inches(height_inches) if height_inches is not None else None
+
+    # Add picture paragraph at the end of the document body, then relocate it
+    pic_para = doc.add_paragraph()
+    run = pic_para.add_run()
+    run.add_picture(str(image_path), width=w, height=h)
+    body = doc.element.body
+    body.remove(pic_para._element)
+    anchor_para._element.addnext(pic_para._element)
+
+    # Optionally add caption immediately after the picture paragraph
+    if caption is not None:
+        cap_para = doc.add_paragraph(caption, style=caption_style)
+        body.remove(cap_para._element)
+        pic_para._element.addnext(cap_para._element)
+
+    doc.save(str(output))
+    return True
+
+
 def tracked_delete(path, delete_text, output, author=""):
     """Mark delete_text as a tracked deletion in the first paragraph that contains it.
     Returns the number of paragraphs where a deletion was marked.
@@ -408,6 +477,32 @@ def cmd_insert(args):
     else:
         print(f"error: anchor text not found: {args.anchor!r}", file=sys.stderr)
         sys.exit(1)
+
+
+def cmd_insert_picture(args):
+    out = _resolve_output(args)
+    after_index = args.after_paragraph
+    after_anchor = args.after_anchor
+    if after_index is None and after_anchor is None:
+        print("error: one of --after-paragraph or --after-anchor is required.", file=sys.stderr)
+        sys.exit(1)
+    if after_index is not None and after_anchor is not None:
+        print("error: --after-paragraph and --after-anchor are mutually exclusive.", file=sys.stderr)
+        sys.exit(1)
+    try:
+        insert_picture(
+            args.file, args.image, out,
+            after_index=after_index,
+            after_anchor=after_anchor,
+            width_inches=args.width,
+            height_inches=args.height,
+            caption=args.caption,
+            caption_style=args.caption_style,
+        )
+    except (IndexError, ValueError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        sys.exit(1)
+    print(f"Picture inserted. Saved: {out}")
 
 
 def cmd_delete(args):
@@ -546,6 +641,56 @@ def build_parser():
         ),
     )
     p.set_defaults(func=cmd_insert)
+
+    # insert-picture
+    p = sub.add_parser(
+        "insert-picture",
+        help="Insert an inline image after a paragraph (by index or anchor text).",
+    )
+    p.add_argument("file", help="Input .docx file.")
+    p.add_argument("image", help="Path to the image file (PNG, JPEG, GIF, BMP, TIFF).")
+    p.add_argument("-o", "--output", help="Output path (default: overwrite input).")
+    anchor_group = p.add_mutually_exclusive_group(required=True)
+    anchor_group.add_argument(
+        "--after-paragraph",
+        type=int,
+        metavar="N",
+        dest="after_paragraph",
+        help="Insert after zero-based paragraph index N.",
+    )
+    anchor_group.add_argument(
+        "--after-anchor",
+        metavar="TEXT",
+        dest="after_anchor",
+        help="Insert after the first paragraph whose text contains TEXT.",
+    )
+    p.add_argument(
+        "--width",
+        type=float,
+        default=None,
+        metavar="INCHES",
+        help="Image width in inches. Height scales proportionally if --height is omitted.",
+    )
+    p.add_argument(
+        "--height",
+        type=float,
+        default=None,
+        metavar="INCHES",
+        help="Image height in inches. Width scales proportionally if --width is omitted.",
+    )
+    p.add_argument(
+        "--caption",
+        default=None,
+        help="Optional caption text inserted as a new paragraph immediately after the image.",
+    )
+    p.add_argument(
+        "--caption-style",
+        default="Caption",
+        metavar="STYLE",
+        dest="caption_style",
+        help="Paragraph style for the caption (default: 'Caption').",
+    )
+    p.set_defaults(func=cmd_insert_picture)
 
     # delete
     p = sub.add_parser("delete", help="Delete matched text.")

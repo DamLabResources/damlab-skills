@@ -36,6 +36,7 @@ STYLES_DIR=~/.cursor/skills/docx/styles
 **Editing**
 - `replace FILE OLD NEW [-o OUT] [--track] [--author NAME] [--normalize-quotes] [--allow-no-match]` — find-and-replace; `--track` records a tracked revision; exits 1 on 0 matches (see notes below)
 - `insert FILE ANCHOR TEXT [-o OUT] [--track] [--author NAME] [--style NAME]` — insert text as a new paragraph after anchor; `--style` sets the paragraph style (e.g. `Caption`, `Heading 1`); `--track` appends as tracked insertion within the anchor paragraph (style flag ignored in track mode)
+- `insert-picture FILE IMAGE [-o OUT] (--after-paragraph N | --after-anchor TEXT) [--width INCHES] [--height INCHES] [--caption TEXT] [--caption-style STYLE]` — insert an inline image after a paragraph; width/height in inches (one scales proportionally if the other is omitted; native size if both omitted); optional caption paragraph added immediately after the image
 - `delete FILE TEXT [-o OUT] [--track] [--author NAME]` — delete matched text; `--track` marks as tracked deletion
 
 ## Subcommands — pandoc
@@ -128,6 +129,22 @@ $DOCX_TOOL list-styles manuscript.docx --type paragraph
 ```bash
 $DOCX_TOOL insert manuscript.docx "Figure 1" "Figure 1. Sample overview." \
     --style "Caption" -o manuscript_captioned.docx
+```
+
+**Insert an image after paragraph index 3 at max 7.5-inch width (NIH page width):**
+```bash
+$DOCX_TOOL insert-picture manuscript.docx figures/fig1.png \
+    --after-paragraph 3 --width 7.5 -o manuscript_with_fig.docx
+```
+
+**Insert an image after an anchor paragraph, with a caption:**
+```bash
+$DOCX_TOOL insert-picture manuscript.docx figures/fig1.png \
+    --after-anchor "workflow overview" \
+    --width 6.5 \
+    --caption "Figure 1. Analysis workflow overview." \
+    --caption-style "Caption" \
+    -o manuscript_with_fig.docx
 ```
 
 **Convert Markdown to a new .docx:**
