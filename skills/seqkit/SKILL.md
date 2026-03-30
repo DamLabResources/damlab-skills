@@ -12,9 +12,15 @@ description: Manipulate FASTA and FASTQ files using seqkit. Use when working wit
 
 ## Environment
 
+Binary: `bin/seqkit` — relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute path for this machine:
 ```bash
-SEQKIT=~/.cursor/skills/seqkit/bin/seqkit
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/seqkit"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed output literally as the first token in every command.
+In examples below, `$SEQKIT` is a readable placeholder for that resolved path.
 
 Supports gzip (.gz), xz (.xz), zstd (.zst), and bzip2 (.bz2) input/output natively.
 
@@ -145,11 +151,18 @@ seqkit reads/writes stdin/stdout cleanly:
 $SEQKIT seq -m 1000 input.fq.gz | $SEQKIT sample -n 5000 -s 1 > sampled_long.fq
 ```
 
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/seqkit"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/seqkit/reference.md
+grep -A 80 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -157,6 +170,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/seqkit/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

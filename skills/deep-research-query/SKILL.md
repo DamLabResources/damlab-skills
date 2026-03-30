@@ -208,10 +208,14 @@ See the "Generate .bib from PubMed XML" pattern in `patterns.md` for the full Py
 
 **Step 3 — Render to `.docx` with bibliography:**
 
+Use the pandoc binary from the docx skill. Resolve its path with:
 ```bash
-PANDOC=~/.cursor/skills/docx/bin/pandoc
-STYLES=~/.cursor/skills/docx/styles
+readlink -f "$(dirname <path-to-docx-SKILL.md>)/bin/pandoc"
+```
+where `<path-to-docx-SKILL.md>` is the absolute path you used to read the docx SKILL.md.
+`$PANDOC` and `$STYLES` below are placeholders for those resolved paths.
 
+```bash
 $PANDOC <project_dir>/review.md \
   --citeproc \
   --bibliography=<project_dir>/refs.bib \

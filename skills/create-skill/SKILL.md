@@ -18,6 +18,8 @@ skills/<toolname>/
 └── CHANGELOG.md      # Update history
 ```
 
+> **Allowlist note:** `install.sh` symlinks `skills/<toolname>/bin` → `venvs/<toolname>/bin`. Binaries are therefore at `bin/<toolname>` relative to the skill directory. Because Cursor and compatible IDEs evaluate their terminal command allowlist **before** the shell expands variables, agents must always use the full resolved literal path — not `$VAR` or `~` — as the first token in any shell command. See the [Environment section template](#2-skillmd) and `## Allowlist entries` below for the standard resolution pattern.
+
 ## Step-by-step checklist
 
 - [ ] Create `skills/<toolname>/environment.yaml`
@@ -65,9 +67,15 @@ description: <Third-person, specific. Include WHAT the tool does and WHEN to use
 
 ## Environment
 
+Binary: `bin/<toolname>` — relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute path for this machine:
 ​```bash
-<TOOLNAME>=~/.cursor/skills/<toolname>/bin/<toolname>
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/<toolname>"
 ​```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed output literally as the first token in every command.
+In examples below, `$<TOOLNAME>` is a readable placeholder for that resolved path.
 
 ## Subcommands
 
@@ -81,11 +89,18 @@ description: <Third-person, specific. Include WHAT the tool does and WHEN to use
 ## Common patterns
 [5-8 most-used patterns with runnable examples using $<TOOLNAME>]
 
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+​```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/<toolname>"
+​```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ​```bash
-grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/<toolname>/reference.md
+grep -A 80 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ​```
 Full reference: [reference.md](reference.md)
 
@@ -93,16 +108,16 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ​```bash
-grep -A 20 "keyword" ~/.cursor/skills/<toolname>/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ​```
 [patterns.md](patterns.md)
 ```
 
 **Rules:**
-- Define the binary path as a variable in the Environment section: `<TOOLNAME>=~/.cursor/skills/<toolname>/bin/<toolname>`
-- This path is stable on any machine: `install.sh` creates a `bin/` symlink inside each skill dir pointing to the venv's `bin/` directory
-- Use `$<TOOLNAME>` for every command example — never `conda run`
-- Pipes between tools use direct paths on both sides: `$TOOL1 ... | $TOOL2 ...`
+- The binary is at `bin/<toolname>` relative to this skill directory; `install.sh` creates that `bin/` symlink pointing to `venvs/<toolname>/bin/`
+- Before issuing commands, resolve the literal path: `readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/<toolname>"`
+- Use `$<TOOLNAME>` in example prose only as a readable placeholder — **never** emit `$VAR` or `~` as the first token in an actual shell command; Cursor evaluates the allowlist before shell expansion
+- Pipes between tools resolve both sides literally: `<resolved-tool1> ... | <resolved-tool2> ...`
 - Keep SKILL.md under 200 lines — put detailed flags in reference.md
 - Each pattern should be a runnable example, not a prose description
 - Include a multi-tool pipeline example if the tool is commonly piped
@@ -120,11 +135,11 @@ Contains the verbatim `--help` output for every subcommand, organized by functio
 ```markdown
 # <Toolname> — Full Reference
 
-Binary: `~/.cursor/skills/<toolname>/bin/<toolname>`
+Binary: `bin/<toolname>` (relative to this skill directory)
 
 Each entry contains the verbatim `--help` output. Grep for a subcommand:
 ​```bash
-grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/<toolname>/reference.md
+grep -A 80 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ​```
 Increase `-A` if output appears truncated.
 
@@ -184,7 +199,7 @@ Pattern entry format (add new ones at the bottom):
 ## [Unreleased]
 
 ## [YYYY-MM-DD] — Initial skill
-- Tool version: latest at install time (run `~/.cursor/skills/<toolname>/bin/<toolname> --version` to check)
+- Tool version: latest at install time (resolve path with `readlink -f "$(dirname <SKILL.md path>)/bin/<toolname>"` then run `<resolved-path> --version` to check)
 - Skill version: 1.0.0
 - Added: initial SKILL.md, reference.md, patterns.md, environment.yaml
 ```

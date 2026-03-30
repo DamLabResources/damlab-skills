@@ -53,7 +53,7 @@ bash install.sh
 What [install.sh](install.sh) does:
 
 1. For each tool skill, creates a conda environment **at a prefix path** `venvs/<tool>/` from `skills/<tool>/environment.yaml`, unless that directory already exists.
-2. Symlinks `skills/<tool>/bin` → `../../venvs/<tool>/bin` so each `SKILL.md` can use stable paths like `~/.cursor/skills/samtools/bin/samtools` after linking.
+2. Symlinks `skills/<tool>/bin` → `../../venvs/<tool>/bin` so each `SKILL.md` can reference binaries as `bin/<tool>` relative to the skill directory.
 3. Symlinks each skill directory into `~/.cursor/skills/`.
 
 The `name:` field inside each `environment.yaml` (e.g. `damlab-skill-samtools`) is **documentation only**; install uses `--prefix` and does not register a conda **named** env. See [skills/create-skill/SKILL.md](skills/create-skill/SKILL.md).
@@ -61,6 +61,20 @@ The `name:` field inside each `environment.yaml` (e.g. `damlab-skill-samtools`) 
 The `venvs/` directory is gitignored. Restart Cursor after install so skills reload.
 
 Re-running `install.sh` is safe: existing prefix envs are skipped; symlinks are refreshed.
+
+### Terminal command allowlist
+
+Cursor (and compatible IDEs such as OpenClaw) evaluate their terminal command allowlist against the **literal first token** of each shell command — before the shell expands variables or `~`. Skills in this repo are designed so agents always emit fully resolved literal paths.
+
+Each skill's `## Allowlist entries` section contains `readlink -f` probe commands to get the exact path for your machine:
+
+```bash
+# Example — resolve the samtools path on this machine:
+readlink -f "$(dirname <path-to-samtools-SKILL.md>)/bin/samtools"
+# → /home/alice/.cursor/skills/samtools/bin/samtools
+```
+
+Add the printed output to **Cursor Settings → Features → Terminal → Command Allowlist** (one entry per binary). The paths are machine-specific and not hardcoded in the skill files, so this works for any username, home directory, or IDE install location.
 
 ## Updating
 

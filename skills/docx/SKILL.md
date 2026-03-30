@@ -13,11 +13,20 @@ description: Read, write, and track-change Microsoft Word (.docx) files. Use whe
 
 ## Environment
 
+Executables and resources relative to this skill directory:
+- `docx_tool` — self-locating wrapper script (calls the skill's conda python with `docx_tool.py`)
+- `bin/pandoc` — pandoc binary
+- `styles/` — reusable Word style templates
+
+Before issuing any commands, resolve the full absolute paths for this machine:
 ```bash
-DOCX_TOOL="~/.cursor/skills/docx/bin/python ~/.cursor/skills/docx/docx_tool.py"
-PANDOC=~/.cursor/skills/docx/bin/pandoc
-STYLES_DIR=~/.cursor/skills/docx/styles
+readlink -f "$(dirname <path-to-this-SKILL.md>)/docx_tool"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/pandoc"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed outputs literally as the first tokens in commands.
+In examples below, `$DOCX_TOOL` and `$PANDOC` are readable placeholders for those resolved paths.
+`$STYLES_DIR` is a readable placeholder for `"$(dirname <path-to-this-SKILL.md>)/styles"`.
 
 ## Subcommands — docx_tool.py
 
@@ -164,7 +173,7 @@ $PANDOC manuscript.docx -t markdown | grep -i "sample size"
 
 ## Style templates
 
-Reusable Word templates live in `~/.cursor/skills/docx/styles/`. Pass any of them to pandoc via `--reference-doc` to control fonts, margins, and paragraph formatting. Pandoc maps Markdown structural elements to named Word styles in the template (e.g. `#` → **Heading 1**, body text → **Body Text**).
+Reusable Word templates live in `styles/` relative to this skill directory. Pass any of them to pandoc via `--reference-doc` to control fonts, margins, and paragraph formatting. Pandoc maps Markdown structural elements to named Word styles in the template (e.g. `#` → **Heading 1**, body text → **Body Text**).
 
 | File | Description |
 |---|---|
@@ -175,17 +184,25 @@ Reusable Word templates live in `~/.cursor/skills/docx/styles/`. Pass any of the
 $DOCX_TOOL list-styles $STYLES_DIR/nih-proposal-template.docx --type paragraph
 ```
 
-**Add your own template:** place any `.docx` whose paragraph styles are correctly configured into `~/.cursor/skills/docx/styles/`. To bootstrap a new template from pandoc's default:
+**Add your own template:** place any `.docx` whose paragraph styles are correctly configured into `styles/`. To bootstrap a new template from pandoc's default:
 ```bash
 $PANDOC --print-default-data-file reference.docx > $STYLES_DIR/my-template.docx
 # then open my-template.docx in Word, adjust styles and margins, save
+```
+
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/docx_tool"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/pandoc"
 ```
 
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 40 "^### \`subcommand\`" ~/.cursor/skills/docx/reference.md
+grep -A 40 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -193,6 +210,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/docx/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

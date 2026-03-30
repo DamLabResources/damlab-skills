@@ -11,9 +11,15 @@ description: Manipulate SAM/BAM/CRAM alignment files using samtools. Use when wo
 
 ## Environment
 
+Binary: `bin/samtools` — relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute path for this machine:
 ```bash
-SAMTOOLS=~/.cursor/skills/samtools/bin/samtools
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/samtools"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed output literally as the first token in every command.
+In examples below, `$SAMTOOLS` is a readable placeholder for that resolved path.
 
 ## Subcommands
 
@@ -122,11 +128,18 @@ samtools reads/writes stdin/stdout and pipes cleanly with other tools:
 $SAMTOOLS view -bS -@ 4 input.sam | $SAMTOOLS sort -@ 4 -o sorted.bam
 ```
 
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/samtools"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/samtools/reference.md
+grep -A 80 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -134,6 +147,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/samtools/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

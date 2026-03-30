@@ -224,7 +224,7 @@ At the end of a session:
 Reusable real-world patterns accumulated over time. To search:
 
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/bioinfo-best-practices/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 
 [patterns.md](patterns.md)
