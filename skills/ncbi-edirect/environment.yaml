@@ -1,0 +1,7 @@
+name: damlab-skill-ncbi-edirect
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - entrez-direct
