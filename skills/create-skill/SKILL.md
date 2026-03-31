@@ -224,7 +224,11 @@ After creating the files, update two lines:
 TOOL_SKILLS=(samtools seqkit csvtk <toolname>)
 ```
 
+Users can link skills to Cursor (default), OpenClaw (`bash install.sh --openclaw`), or a custom directory (`bash install.sh --dest /path/to/skills`). See root [INSTALL.md](../../INSTALL.md).
+
 **`README.md`** — add a row to the skills table:
 ```markdown
 | `<toolname>` | [<Toolname>](<url>) | <one-line description> |
 ```
+
+**`CHANGELOG.md`** (repo root and `skills/<toolname>/CHANGELOG.md` as appropriate) — note the new skill. See [CONTRIBUTING.md](../../CONTRIBUTING.md).
