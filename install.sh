@@ -29,8 +29,8 @@ venv_exists() {
 # Skill directories — add new entries here when skills are added to the repo
 # ---------------------------------------------------------------------------
 
-TOOL_SKILLS=(samtools seqkit csvtk pod5 crispresso rclone)
-META_SKILLS=(create-skill bioinfo-best-practices)
+TOOL_SKILLS=(samtools seqkit csvtk pod5 crispresso rclone docx ncbi-edirect)
+META_SKILLS=(create-skill bioinfo-best-practices bioinformatics-methods-results-writer deep-research-query)
 
 # ---------------------------------------------------------------------------
 # 1. Create conda environments under venvs/

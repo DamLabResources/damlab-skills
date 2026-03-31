@@ -16,8 +16,12 @@ The same layout works in other agents that load skills from standard locations (
 | `pod5` | [pod5](https://github.com/nanoporetech/pod5-file-format) | POD5 nanopore raw signal file inspection, merging, filtering, subsetting, and conversion |
 | `crispresso` | [CRISPResso2](https://docs.crispresso.com/) | CRISPR genome editing outcome analysis from amplicon sequencing (indels, HDR, base editing, prime editing) |
 | `rclone` | [rclone](https://rclone.org/) | Sync and transfer files with cloud storage and remote backends (S3, GCS, Drive, SFTP, etc.) |
+| `docx` | [python-docx](https://python-docx.readthedocs.io/) + [pandoc](https://pandoc.org/) | Read, write, and track-change Microsoft Word .docx files |
+| `ncbi-edirect` | [NCBI EDirect](https://www.ncbi.nlm.nih.gov/books/NBK179288/) | Search NCBI databases and download papers, sequences, and records (esearch, efetch, elink, xtract) |
 | `create-skill` | — | Meta-skill: conventions for adding new skills to this repo |
 | `bioinfo-best-practices` | — | Meta-skill: workflow conventions for reproducible bioinformatics analysis and debugging |
+| `bioinformatics-methods-results-writer` | — | Meta-skill: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables |
+| `deep-research-query` | — | Meta-skill: plan and execute rigorous literature searches, evidence syntheses, and review-style summaries for biomedical and computational biology topics |
 
 ## Why conda environments instead of MCP servers?
 
@@ -101,7 +105,7 @@ damlab-skills/
         └── bin/              # symlink -> ../../venvs/<tool>/bin (created by install.sh)
 ```
 
-Tool names under `skills/` match rows in the table above plus meta-skills `create-skill` and `bioinfo-best-practices`.
+Tool names under `skills/` match rows in the table above plus meta-skills `create-skill`, `bioinfo-best-practices`, `bioinformatics-methods-results-writer`, and `deep-research-query`.
 
 ## Adding a new skill
 
