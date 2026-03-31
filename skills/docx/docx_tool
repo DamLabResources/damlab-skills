@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Self-locating wrapper: finds the skill's conda python and docx_tool.py
+# relative to this script's own location, regardless of install path.
+SKILL_DIR="$(dirname "$(readlink -f "$0")")"
+exec "$SKILL_DIR/bin/python" "$SKILL_DIR/docx_tool.py" "$@"

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [2026-03-30]
+- Skill version: 1.2.0
+- Changed: pandoc cross-reference in Phase 4 now uses the allowlist-safe `readlink -f` probe pattern pointing to the docx skill directory, instead of a hardcoded `~/.cursor/skills/docx/` path
+
 ## [2026-03-26] — Collaborative workflow
 - Skill version: 1.1.0
 - Changed: restructured into five explicit phases (clarifying questions, search planning, initial search + theme report, optional additional searches, drafting)

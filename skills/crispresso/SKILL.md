@@ -14,14 +14,20 @@ description: Analyze CRISPR genome editing outcomes from amplicon sequencing usi
 
 ## Environment
 
+Binaries are in `bin/` relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute paths for this machine:
 ```bash
-CRISPRESSO=~/.cursor/skills/crispresso/bin/CRISPResso
-CRISPRESSO_BATCH=~/.cursor/skills/crispresso/bin/CRISPRessoBatch
-CRISPRESSO_POOLED=~/.cursor/skills/crispresso/bin/CRISPRessoPooled
-CRISPRESSO_COMPARE=~/.cursor/skills/crispresso/bin/CRISPRessoCompare
-CRISPRESSO_WGS=~/.cursor/skills/crispresso/bin/CRISPRessoWGS
-CRISPRESSO_AGGREGATE=~/.cursor/skills/crispresso/bin/CRISPRessoAggregate
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPResso"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoBatch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoPooled"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoCompare"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoWGS"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoAggregate"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed outputs literally as the first tokens in commands.
+In examples below, `$CRISPRESSO`, `$CRISPRESSO_BATCH`, etc. are readable placeholders for those resolved paths.
 
 ## Tools
 
@@ -126,12 +132,24 @@ $CRISPRESSO_POOLED \
   --n_processes 4
 ```
 
+## Allowlist entries
+
+Resolve and add each path to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPResso"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoBatch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoPooled"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoCompare"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoWGS"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/CRISPRessoAggregate"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific tool:
 ```bash
-grep -A 30 "^### \`CRISPResso\`" ~/.cursor/skills/crispresso/reference.md
-grep -A 30 "^### \`CRISPRessoBatch\`" ~/.cursor/skills/crispresso/reference.md
+grep -A 30 "^### \`CRISPResso\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
+grep -A 30 "^### \`CRISPRessoBatch\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -139,6 +157,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/crispresso/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

@@ -13,9 +13,15 @@ description: Inspect, merge, filter, subset, repack, and convert nanopore POD5
 
 ## Environment
 
+Binary: `bin/pod5` — relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute path for this machine:
 ```bash
-POD5=~/.cursor/skills/pod5/bin/bin/pod5
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/pod5"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed output literally as the first token in every command.
+In examples below, `$POD5` is a readable placeholder for that resolved path.
 
 ## Subcommands
 
@@ -103,11 +109,18 @@ $POD5 convert to_fast5 input.pod5 --output pod5_to_fast5/ --file-read-count 2000
 $POD5 update old/*.pod5 --output updated/
 ```
 
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/pod5"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 50 "^### \`subcommand\`" ~/.cursor/skills/pod5/reference.md
+grep -A 50 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -115,6 +128,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/pod5/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

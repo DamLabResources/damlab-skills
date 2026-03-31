@@ -12,17 +12,25 @@ description: Search NCBI databases and download papers, sequences, and records u
 
 ## Environment
 
-```bash
-ESEARCH=~/.cursor/skills/ncbi-edirect/bin/esearch
-EFETCH=~/.cursor/skills/ncbi-edirect/bin/efetch
-EFILTER=~/.cursor/skills/ncbi-edirect/bin/efilter
-ELINK=~/.cursor/skills/ncbi-edirect/bin/elink
-XTRACT=~/.cursor/skills/ncbi-edirect/bin/xtract
-EPOST=~/.cursor/skills/ncbi-edirect/bin/epost
-EINFO=~/.cursor/skills/ncbi-edirect/bin/einfo
-TRANSMUTE=~/.cursor/skills/ncbi-edirect/bin/transmute
-NQUIRE=~/.cursor/skills/ncbi-edirect/bin/nquire
+Binaries are in `bin/` relative to this skill directory.
 
+Before issuing any commands, resolve the full absolute paths for this machine:
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/esearch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/efetch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/efilter"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/elink"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/xtract"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/epost"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/einfo"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/transmute"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/nquire"
+```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed outputs literally as the first tokens in commands.
+In examples below, `$ESEARCH`, `$EFETCH`, etc. are readable placeholders for those resolved paths.
+
+```bash
 # nquire env vars (control the internal HTTP client used by all CLI tools)
 export NQUIRE_HELPER=wget    # use wget instead of curl (fixes curl --http1.0 SSL failures)
 export NQUIRE_TIMEOUT=10     # connection timeout in seconds (default 20)
@@ -101,7 +109,8 @@ $EFETCH -format abstract
 
 **Pipe xtract output to csvtk for further analysis:**
 ```bash
-CSVTK=~/.cursor/skills/csvtk/bin/csvtk
+# Resolve the csvtk path using the same readlink pattern from the csvtk skill.
+# $CSVTK is a placeholder for that resolved path.
 $ESEARCH -db pubmed -query "CRISPR [MeSH] AND 2020:2024 [PDAT]" |
 $EFETCH -format xml |
 $XTRACT -mixed -pattern PubmedArticle \
@@ -126,11 +135,26 @@ your environment; this does not affect real queries.
 **PubMed XML contains `<i>`, `<b>`, `<sup>` tags** — always pass `-mixed` to `xtract`
 when parsing `pubmed` or `pmc` format XML, or xtract will error and drop affected fields.
 
+## Allowlist entries
+
+Resolve and add each path to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/esearch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/efetch"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/efilter"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/elink"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/xtract"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/epost"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/einfo"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/transmute"
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/nquire"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 80 "^### \`subcommand\`" ~/.cursor/skills/ncbi-edirect/reference.md
+grep -A 80 "^### \`subcommand\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Full reference: [reference.md](reference.md)
 
@@ -138,6 +162,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/ncbi-edirect/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)

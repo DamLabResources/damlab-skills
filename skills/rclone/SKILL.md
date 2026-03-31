@@ -12,9 +12,15 @@ description: Sync, copy, move, and list files against cloud and remote storage u
 
 ## Environment
 
+Binary: `bin/rclone` — relative to this skill directory.
+
+Before issuing any commands, resolve the full absolute path for this machine:
 ```bash
-RCLONE=~/.cursor/skills/rclone/bin/rclone
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/rclone"
 ```
+Substitute `<path-to-this-SKILL.md>` with the absolute path you used to read this file.
+Use the printed output literally as the first token in every command.
+In examples below, `$RCLONE` is a readable placeholder for that resolved path.
 
 Remote paths use the form `name:path` (e.g. `s3:my-bucket/data/`). Local paths are ordinary filesystem paths. Config defaults to `~/.config/rclone/rclone.conf`; override with `--config /path/to/rclone.conf` or `RCLONE_CONFIG`.
 
@@ -116,11 +122,18 @@ $RCLONE copy -P /data s3:bucket/prefix/ \
   --s3-access-key-id "$KEY" --s3-secret-access-key "$SECRET"
 ```
 
+## Allowlist entries
+
+Resolve and add to your terminal command allowlist (Cursor: Settings → Features → Terminal):
+```bash
+readlink -f "$(dirname <path-to-this-SKILL.md>)/bin/rclone"
+```
+
 ## Full flag reference
 
 To look up all flags for a specific subcommand:
 ```bash
-grep -A 120 "^### \`copy\`" ~/.cursor/skills/rclone/reference.md
+grep -A 120 "^### \`copy\`" "$(dirname <path-to-this-SKILL.md>)/reference.md"
 ```
 Global flags are under `### \`help flags\``. Top-level overview: `### \`rclone\``.
 
@@ -130,6 +143,6 @@ Full reference: [reference.md](reference.md)
 
 Reusable real-world patterns accumulated over time. To search:
 ```bash
-grep -A 20 "keyword" ~/.cursor/skills/rclone/patterns.md
+grep -A 20 "keyword" "$(dirname <path-to-this-SKILL.md>)/patterns.md"
 ```
 [patterns.md](patterns.md)
