@@ -1,0 +1,14 @@
+name: damlab-skill-plotting
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python >=3.11
+  - altair >=6.0
+  - vl-convert-python
+  # VegaFusion: conda-forge package is `vegafusion` only (PyPI splits vegafusion vs vegafusion-python).
+  - vegafusion
+  - pandas
+  - polars
+  # Required by vegafusion + pandas when serializing DataFrames at PNG save time (Arrow C stream).
+  - pyarrow

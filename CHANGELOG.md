@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Tool skill `plotting`: Altair (Vega-Lite) charts with `plot_tool` CLI, `damlab_plot` helpers, PNG/SVG/HTML export (vl-convert, vegafusion).
 - Meta-skill `bioinformatics-methods-results-writer`: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables.
 
 ## [0.0.1] - 2026-03-23

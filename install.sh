@@ -29,7 +29,7 @@ venv_exists() {
 # Skill directories — add new entries here when skills are added to the repo
 # ---------------------------------------------------------------------------
 
-TOOL_SKILLS=(samtools seqkit csvtk pod5 crispresso rclone docx ncbi-edirect)
+TOOL_SKILLS=(samtools seqkit csvtk pod5 crispresso rclone docx ncbi-edirect plotting)
 META_SKILLS=(create-skill bioinfo-best-practices bioinformatics-methods-results-writer deep-research-query)
 
 # ---------------------------------------------------------------------------

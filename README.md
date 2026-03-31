@@ -18,6 +18,7 @@ The same layout works in other agents that load skills from standard locations (
 | `rclone` | [rclone](https://rclone.org/) | Sync and transfer files with cloud storage and remote backends (S3, GCS, Drive, SFTP, etc.) |
 | `docx` | [python-docx](https://python-docx.readthedocs.io/) + [pandoc](https://pandoc.org/) | Read, write, and track-change Microsoft Word .docx files |
 | `ncbi-edirect` | [NCBI EDirect](https://www.ncbi.nlm.nih.gov/books/NBK179288/) | Search NCBI databases and download papers, sequences, and records (esearch, efetch, elink, xtract) |
+| `plotting` | [Altair](https://altair-viz.github.io/) + [vl-convert](https://github.com/vega/vl-convert) | Declarative charts (Vega-Lite): PNG/SVG and interactive HTML from Python or JSON specs |
 | `create-skill` | — | Meta-skill: conventions for adding new skills to this repo |
 | `bioinfo-best-practices` | — | Meta-skill: workflow conventions for reproducible bioinformatics analysis and debugging |
 | `bioinformatics-methods-results-writer` | — | Meta-skill: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables |
