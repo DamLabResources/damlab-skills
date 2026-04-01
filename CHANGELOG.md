@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Documentation: [INSTALL.md](INSTALL.md), [PHILOSOPHY.md](PHILOSOPHY.md), [FAQ.md](FAQ.md), [CONTRIBUTING.md](CONTRIBUTING.md); README refactored as a landing page with links to those docs.
+- `install.sh`: configurable skill link destination via `--cursor`, `--openclaw`, `--dest <dir>`, or `SKILLS_DST`; `bash install.sh --help`.
 - Tool skill `plotting`: Altair (Vega-Lite) charts with `plot_tool` CLI, `damlab_plot` helpers, PNG/SVG/HTML export (vl-convert, vegafusion).
 - Meta-skill `bioinformatics-methods-results-writer`: draft Methods and Results manuscript sections from code, notebooks, logs, figures, and tables.
 

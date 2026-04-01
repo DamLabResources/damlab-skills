@@ -2159,18 +2159,18 @@ rclone convmv "c3Rvcmllcw==/VGhlIFF1aWNrIEJyb3duIEZveCEudHh0" --name-transform "
 ```
 
 ```console
-rclone convmv "stories/The Quick Brown 🦊 Fox Went to the Café!.txt" --name-transform "all,nfc"
-// Output: stories/The Quick Brown 🦊 Fox Went to the Café!.txt
+rclone convmv "stories/The Quick Brown Fox Went to the Café!.txt" --name-transform "all,nfc"
+// Output: stories/The Quick Brown Fox Went to the Café!.txt
 ```
 
 ```console
-rclone convmv "stories/The Quick Brown 🦊 Fox Went to the Café!.txt" --name-transform "all,nfd"
-// Output: stories/The Quick Brown 🦊 Fox Went to the Café!.txt
+rclone convmv "stories/The Quick Brown Fox Went to the Café!.txt" --name-transform "all,nfd"
+// Output: stories/The Quick Brown Fox Went to the Café!.txt
 ```
 
 ```console
-rclone convmv "stories/The Quick Brown 🦊 Fox!.txt" --name-transform "all,ascii"
-// Output: stories/The Quick Brown  Fox!.txt
+rclone convmv "stories/The Quick Brown Fox!.txt" --name-transform "all,ascii"
+// Output: stories/The Quick Brown Fox!.txt
 ```
 
 ```console
@@ -2184,7 +2184,7 @@ rclone convmv "stories/The Quick Brown Fox!.txt" --name-transform "all,prefix=OL
 ```
 
 ```console
-rclone convmv "stories/The Quick Brown 🦊 Fox Went to the Café!.txt" --name-transform "all,charmap=ISO-8859-7"
+rclone convmv "stories/The Quick Brown Fox Went to the Café!.txt" --name-transform "all,charmap=ISO-8859-7"
 // Output: stories/The Quick Brown _ Fox Went to the Caf_!.txt
 ```
 
@@ -2194,8 +2194,8 @@ rclone convmv "stories/The Quick Brown Fox: A Memoir [draft].txt" --name-transfo
 ```
 
 ```console
-rclone convmv "stories/The Quick Brown 🦊 Fox Went to the Café!.txt" --name-transform "all,truncate=21"
-// Output: stories/The Quick Brown 🦊 Fox
+rclone convmv "stories/The Quick Brown Fox Went to the Café!.txt" --name-transform "all,truncate=21"
+// Output: stories/The Quick Brown Fox
 ```
 
 ```console
