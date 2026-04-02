@@ -1,0 +1,17 @@
+name: damlab-skill-eda
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Pin below 3.14 so the solver does not pull bleeding-edge python builds that can break links.
+  - python >=3.11,<3.13
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - pingouin
+  - statsmodels
+  - scikit-learn
+  - ipykernel
+  - jupyter_core
+  - jupyter_client
